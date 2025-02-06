@@ -1,0 +1,14 @@
+[package]
+name = "octillion"
+version = "0.1.0"
+authors = ["Victoria Worthington <victoworthington@gmail.com>"]
+license = "MIT"
+edition = "2021"
+
+[dependencies]
+egui = "0.31.0"
+eframe = {version = "0.31", features = [
+    "default",
+    "__screenshot", # __screenshot is so we can dump a screenshot using EFRAME_SCREENSHOT_TO
+] }
+egui_extras = {version = "0.31", features = ["default", "image"]}
