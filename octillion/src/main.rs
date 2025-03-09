@@ -79,7 +79,7 @@ impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
 
         ctx.style_mut(|style| {
-            style.visuals.override_text_color = Some(self.app_colors.primary);
+            // style.visuals.override_text_color = Some(self.app_colors.primary);
 
             style.spacing.item_spacing = egui::Vec2::new(8.0, 4.0);
             style.spacing.button_padding = egui::Vec2::new(12.0, 6.0);
