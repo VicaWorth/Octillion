@@ -6,9 +6,13 @@ license = "MIT"
 edition = "2021"
 
 [dependencies]
-egui = "0.31.0"
-eframe = {version = "0.31", features = [
-    "default",
-    "__screenshot", # __screenshot is so we can dump a screenshot using EFRAME_SCREENSHOT_TO
-] }
-egui_extras = {version = "0.31", features = ["default", "image"]}
+egui = "0.24"
+eframe = { version = "0.24", features = ["default"] } # NO extra features here
+egui_extras = { version = "0.24", features = ["default", "image"] }
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "mysql"] }
+tokio = { version = "1", features = ["full"] }
+dotenvy = "0.15"
+futures = "0.3"
+
+[target.'cfg(windows)'.dependencies]  # <--- THIS IS THE KEY PART
+winapi = { version = "0.3", features = ["winuser", "windef"] }

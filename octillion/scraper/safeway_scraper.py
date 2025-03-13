@@ -6,11 +6,11 @@ from urllib.parse import urlencode, quote_plus
 import socket
 import pprint
 
-import undetected_chromedriver as uc
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
+# import undetected_chromedriver as uc
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
+# from selenium.webdriver.common.action_chains import ActionChains
 
 STOP = False
 
@@ -28,7 +28,7 @@ headers = {
     "dnt": "1",
     "ocp-apim-subscription-key": "5e790236c84e46338f4290aa1050cdd4",
     "priority": "u=1, i",
-    "referer": "https://www.safeway.com/shop/search-results.html?q=apples",
+    "referer": "https://www.safeway.com/shop/search-results.html",
     "sec-ch-ua": '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
     "sec-ch-ua-mobile": "?0",
     "sec-ch-ua-platform": '"Windows"',
@@ -36,6 +36,19 @@ headers = {
     "sec-fetch-mode": "cors",
     "sec-fetch-site": "same-origin",
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+}
+
+cookies = {
+    "OptanonAlertBoxClosed": "2025-03-05T20:35:19.698Z",
+    "OptanonConsent": "isGpcEnabled=0&datestamp=Mon+Mar+10+2025+20%3A16%3A09+GMT-0700+(Pacific+Daylight+Time)&version=202409.1.0&browserGpcFlag=0&isIABGlobal=false&hosts=&consentId=bcd1b7b8-a289-45d4-837b-df533c838dd7&interactionCount=2&isAnonUser=1&landingPath=NotLandingPage&groups=C0001%3A1%2CC0002%3A0%2CC0004%3A0%2CC0003%3A1&AwaitingReconsent=false&intType=3&geolocation=US%3BCA",
+    "SWY_SHARED_SESSION_INFO": "%7B%22info%22%3A%7B%22COMMON%22%3A%7B%22userType%22%3A%22G%22%2C%22zipcode%22%3A%2294611%22%2C%22banner%22%3A%22safeway%22%2C%22preference%22%3A%22J4U%22%2C%22Selection%22%3A%22default%22%2C%22wfcStoreId%22%3A%225799%22%2C%22userData%22%3A%7B%7D%2C%22grsSessionId%22%3A%22e68f9e59-fd35-46a5-811a-e50a8d4bfd10%22%2C%22siteType%22%3A%22C%22%2C%22customerType%22%3A%22%22%2C%22resolvedBy%22%3A%22%22%7D%2C%22J4U%22%3A%7B%22storeId%22%3A%223132%22%2C%22zipcode%22%3A%2294611%22%2C%22userData%22%3A%7B%7D%7D%2C%22SHOP%22%3A%7B%22storeId%22%3A%223132%22%2C%22zipcode%22%3A%2294611%22%2C%22userData%22%3A%7B%7D%7D%7D%7D",
+    "SWY_SYND_USER_INFO": "%7B%22storeAddress%22%3A%22%22%2C%22storeZip%22%3A%2294611%22%2C%22storeId%22%3A%223132%22%2C%22preference%22%3A%22J4U%22%7D",
+    "__eoi": "ID=4ef261fb5a27048c:T=1741203384:RT=1741662963:S=AA-AfjYi7GBmwiA-rV3Xs4c_nvzA",
+    "absVisitorId": "7fdad44e-f50b-43c6-8e60-676b6ad98d73",
+    "mbox": "PC#c445a48cdbe74defac17b34ec97dac9b.35_0#1804907799|session#22b22cf095ff40b6aaa8b3a8b2383f18#1741664859",
+    "reese84": "3:yc/MhB9jK33vOPi5t45a7Q==:my9r5alF4nGVnnMWlvbt4ZfL9vBpy5duHhLdcoSf6SP8dBSWA5PlbSXAYMUudhgIMc/LthkbvGzMHpllLU+/HLY8Kb5ULhLX9FR+iaSboJz2MPsOgKpRhlO0xb/MuKO/txEDdbhUclGo5R/Hay70zY2dSNHJoHUZjICx274PANsq8bK7/k6tcDOAvBhuPMJf2C9eSNx5yWOG/Jeh0ndj4mcIAEDaHbJrSjQcKdPEYWHcJIIWxUW4o13NNc85TdIQZAT44qtbM5AeHl0fLgBHndLlmNHASHc4FNr94DNhlVTM+4ereZQi9FfcCnpf8ID/zFp6vC3JtCLMcixRM3mFzcVOwbPZdnAtD0cSBWj6LpO44cEgDAK26oOqdfGMq0MvvsNuAaT+R3bc1ON/me3mkVsIpwgEzqlhub6+llq16o9GxIqlvJneLt/f58R5kd/p8Y9cR4ljbVa0AsOKmhZ41GcMqsVq+NkV55MsEILsE8BjY23V5WG+teLsnQkmf6VMMjmWMV66ZQWmEpaG4FrUgQ==:sRR33PsepS9jsTVViVEnCdqeRwuO41yYSYV8aN94pME=",
+    "salsify_session_id": "75fa7fc4-7f97-4a7c-b735-bd587d5f3b02",
+    "visid_incap_1610353": "jejKaDXISsqliMVvRRSCprOnyGcAAAAAQUIPAAAAAABUy4SlCjnP8lyIeaowFGFr"   
 }
 
 TIMEOUT = 20
@@ -147,12 +160,12 @@ def fetch_data(start, cookies, query="*"):
         "url": "https://www.safeway.com",
         "pageurl": "https://www.safeway.com",
         "pagename": "search",
-        "rows": "30",
+        "rows": "100",
         "start": str(start),
         "search-type": "keyword",
         "storeid": stores["W_SACRAMENTO"],
         "q": query,
-        "sort": "",
+        "sort": "price+asc",
         "dvid": "web-4.1search",
         "channel": "instore",
         "timezone": "America/Los_Angeles",

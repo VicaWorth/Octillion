@@ -1,2 +1,5 @@
 target/
 design/
+scraper/jsons
+config.py
+.env
