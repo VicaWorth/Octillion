@@ -39,16 +39,21 @@ headers = {
 }
 
 cookies = {
-    "OptanonAlertBoxClosed": "2025-03-05T20:35:19.698Z",
-    "OptanonConsent": "isGpcEnabled=0&datestamp=Mon+Mar+10+2025+20%3A16%3A09+GMT-0700+(Pacific+Daylight+Time)&version=202409.1.0&browserGpcFlag=0&isIABGlobal=false&hosts=&consentId=bcd1b7b8-a289-45d4-837b-df533c838dd7&interactionCount=2&isAnonUser=1&landingPath=NotLandingPage&groups=C0001%3A1%2CC0002%3A0%2CC0004%3A0%2CC0003%3A1&AwaitingReconsent=false&intType=3&geolocation=US%3BCA",
-    "SWY_SHARED_SESSION_INFO": "%7B%22info%22%3A%7B%22COMMON%22%3A%7B%22userType%22%3A%22G%22%2C%22zipcode%22%3A%2294611%22%2C%22banner%22%3A%22safeway%22%2C%22preference%22%3A%22J4U%22%2C%22Selection%22%3A%22default%22%2C%22wfcStoreId%22%3A%225799%22%2C%22userData%22%3A%7B%7D%2C%22grsSessionId%22%3A%22e68f9e59-fd35-46a5-811a-e50a8d4bfd10%22%2C%22siteType%22%3A%22C%22%2C%22customerType%22%3A%22%22%2C%22resolvedBy%22%3A%22%22%7D%2C%22J4U%22%3A%7B%22storeId%22%3A%223132%22%2C%22zipcode%22%3A%2294611%22%2C%22userData%22%3A%7B%7D%7D%2C%22SHOP%22%3A%7B%22storeId%22%3A%223132%22%2C%22zipcode%22%3A%2294611%22%2C%22userData%22%3A%7B%7D%7D%7D%7D",
+    "visid_incap_1610353": "653zL4D0TXqxbKa+6nY1Fwk212cAAAAAQUIPAAAAAADRPALlIamGYb/xSeQi9YY6",
+    "incap_ses_1360_1610353": "A4IlVjG47A2AmCj2ALHfEgk212cAAAAAy0gio/y8eBhedoLhfy9jxA==",
+    "akacd_PR-bg-www-prod-safeway": "3919610121~rv=75~id=76162515572b224e485e8152a397f4d4",
+    "ACI_S_ECommBanner": "safeway",
+    "abs_gsession": "%7B%22info%22%3A%7B%22COMMON%22%3A%7B%22Selection%22%3A%22default%22%2C%22preference%22%3A%22J4U%22%2C%22userType%22%3A%22G%22%2C%22zipcode%22%3A%2294611%22%2C%22banner%22%3A%22safeway%22%2C%22siteType%22%3A%22C%22%2C%22customerType%22%3A%22%22%2C%22resolvedBy%22%3A%22%22%7D%2C%22J4U%22%3A%7B%22zipcode%22%3A%2294611%22%2C%22storeId%22%3A%223132%22%7D%2C%22SHOP%22%3A%7B%22zipcode%22%3A%2294611%22%2C%22storeId%22%3A%223132%22%7D%7D%7D",
+    "ACI_S_abs_previouslogin": "%7B%22info%22%3A%7B%22COMMON%22%3A%7B%22Selection%22%3A%22default%22%2C%22preference%22%3A%22J4U%22%2C%22userType%22%3A%22G%22%2C%22zipcode%22%3A%2294611%22%2C%22banner%22%3A%22safeway%22%2C%22siteType%22%3A%22C%22%2C%22customerType%22%3A%22%22%2C%22resolvedBy%22%3A%22%22%7D%2C%22J4U%22%3A%7B%22zipcode%22%3A%2294611%22%2C%22storeId%22%3A%223132%22%7D%2C%22SHOP%22%3A%7B%22zipcode%22%3A%2294611%22%2C%22storeId%22%3A%223132%22%7D%7D%7D",
     "SWY_SYND_USER_INFO": "%7B%22storeAddress%22%3A%22%22%2C%22storeZip%22%3A%2294611%22%2C%22storeId%22%3A%223132%22%2C%22preference%22%3A%22J4U%22%7D",
-    "__eoi": "ID=4ef261fb5a27048c:T=1741203384:RT=1741662963:S=AA-AfjYi7GBmwiA-rV3Xs4c_nvzA",
-    "absVisitorId": "7fdad44e-f50b-43c6-8e60-676b6ad98d73",
-    "mbox": "PC#c445a48cdbe74defac17b34ec97dac9b.35_0#1804907799|session#22b22cf095ff40b6aaa8b3a8b2383f18#1741664859",
-    "reese84": "3:yc/MhB9jK33vOPi5t45a7Q==:my9r5alF4nGVnnMWlvbt4ZfL9vBpy5duHhLdcoSf6SP8dBSWA5PlbSXAYMUudhgIMc/LthkbvGzMHpllLU+/HLY8Kb5ULhLX9FR+iaSboJz2MPsOgKpRhlO0xb/MuKO/txEDdbhUclGo5R/Hay70zY2dSNHJoHUZjICx274PANsq8bK7/k6tcDOAvBhuPMJf2C9eSNx5yWOG/Jeh0ndj4mcIAEDaHbJrSjQcKdPEYWHcJIIWxUW4o13NNc85TdIQZAT44qtbM5AeHl0fLgBHndLlmNHASHc4FNr94DNhlVTM+4ereZQi9FfcCnpf8ID/zFp6vC3JtCLMcixRM3mFzcVOwbPZdnAtD0cSBWj6LpO44cEgDAK26oOqdfGMq0MvvsNuAaT+R3bc1ON/me3mkVsIpwgEzqlhub6+llq16o9GxIqlvJneLt/f58R5kd/p8Y9cR4ljbVa0AsOKmhZ41GcMqsVq+NkV55MsEILsE8BjY23V5WG+teLsnQkmf6VMMjmWMV66ZQWmEpaG4FrUgQ==:sRR33PsepS9jsTVViVEnCdqeRwuO41yYSYV8aN94pME=",
-    "salsify_session_id": "75fa7fc4-7f97-4a7c-b735-bd587d5f3b02",
-    "visid_incap_1610353": "jejKaDXISsqliMVvRRSCprOnyGcAAAAAQUIPAAAAAABUy4SlCjnP8lyIeaowFGFr"   
+    "ACI_S_ECommSignInCount": "0",
+    "SAFEWAY_MODAL_LINK": "",
+    "SWY_SHARED_SESSION_INFO": "%7B%22info%22%3A%7B%22COMMON%22%3A%7B%22userType%22%3A%22G%22%2C%22zipcode%22%3A%2294611%22%2C%22banner%22%3A%22safeway%22%2C%22preference%22%3A%22J4U%22%2C%22Selection%22%3A%22default%22%2C%22wfcStoreId%22%3A%225799%22%2C%22userData%22%3A%7B%7D%2C%22grsSessionId%22%3A%227d75c50f-2923-400d-9ec5-538ce0ff2d64%22%2C%22siteType%22%3A%22C%22%2C%22customerType%22%3A%22%22%2C%22resolvedBy%22%3A%22%22%7D%2C%22J4U%22%3A%7B%22storeId%22%3A%223132%22%2C%22zipcode%22%3A%2294611%22%2C%22userData%22%3A%7B%7D%7D%2C%22SHOP%22%3A%7B%22storeId%22%3A%223132%22%2C%22zipcode%22%3A%2294611%22%2C%22userData%22%3A%7B%7D%7D%7D%7D",
+    "OptanonAlertBoxClosed": "2025-03-16T20:46:47.387Z",
+    "OptanonConsent": "isGpcEnabled=0&datestamp=Sun+Mar+16+2025+13%3A46%3A49+GMT-0700+(Pacific+Daylight+Time)&version=202409.1.0&browserGpcFlag=0&isIABGlobal=false&hosts=&consentId=d335b7ec-3d12-499a-a1e6-3c2286dd9d7d&interactionCount=1&isAnonUser=1&landingPath=NotLandingPage&groups=C0001%3A1%2CC0002%3A0%2CC0004%3A0%2CC0003%3A0&intType=2&geolocation=US%3BCA&AwaitingReconsent=false",
+    "nlbi_1610353_2147483392": "n1poK/VR+iv/JaZo6eNT2gAAAADqt6+kKW+un720JLCTCl/L",
+    "reese84": "3:i7Yz4yQN+HVEkDDR12hMhg==:2pZ+b9jjbJfgkcJC6GKo3lRxhne2DNVoo+KRLCCYA8qZ1Skoeh8Wzl9g9HU9yNFUsCpr0X1fHbO+2WCHud5RuqRsJmOCGIaoR9kVm++Atz80ghm+M2p7w6ifm5Ai3lC9oUiQaPA1ex33qRzwZ1HoipfeZALCARoCEjge3aSua9VzffPrQPjq0IM0BGQ5PmIAJJ9bYSPyXvXwOaSHy0P+vpYrhiB8sDWdhuHnXl9KXndNS/df1yoBwNpDPzgfGqaCrDeJn3595uRuZ7cdbVpdLpgieXUVq/3GrZBzM0hnygRY7LeY22tCUT82uy+vjIBEJQW5E+YLuBk9dPnwshwtjqfDbRE5XeOgNsQOOC1h/cOQG8S1nGY3QsUxqRZdW82A/AuyK827ZGlxEtunuLBY1J4FcOFEBcfVP1QSaHHEu5e/lpMQ4+JI693CFWtm00bn4wk5CYN0vSoIvZYwFdTyyt/ib976a/7bHDI3bRXNREAQVUbT3AK+ChvFCnsXjtAkUWfX9ptalxAZUs5u7QxebNXXtDBINmlR2JXvHQObyqo=:ehJfDNoZvqGibuPNeDLD2DfdVIo8hhjggbneVOAmut4=",
+    "nlbi_1610353": "9eIuQbVvRV5V+JrD6eNT2gAAAABFb/IdKPoPkpczcuaPzKPj"
 }
 
 TIMEOUT = 20
@@ -67,90 +72,11 @@ This code currently doesn't bypass the protections safeway has in place.
 More research will need to be done, for now, I will simply be giving it cookies to use
 That are copy pasted
 """
-def set_cookies():
-    """Gets ALL cookies from Safeway using undetected_chromedriver, with anti-detection measures."""
+# def set_cookies():
+#     """Gets cookies from Safeway.com"""
+    # /abs/pub/xapi/preload/webpreload/storeflags/3132?zipcode=94611
+    # https://www.safeway.com/abs/pub/xapi/preload/webpreload/storeflags/3132?zipcode=94611
 
-    options = uc.ChromeOptions()
-    options.add_argument("--disable-infobars")
-    options.add_argument("--window-size=1920,1080")
-    options.set_capability("goog:chromeOptions", {"args": [f"user-agent={headers['user-agent']}"]})
-    options.add_argument(f"--lang={headers['accept-language']}")
-    
-    if "--headless" in options.arguments:
-        options.add_argument("--disable-gpu")
-        
-    for header, value in headers.items():
-        if header.lower() not in ("user-agent", "sec-ch-ua", "sec-ch-ua-mobile", "sec-ch-ua-platform"):
-            # We already handled user-agent above.  The sec-ch-* headers are best set via capabilities.
-            if isinstance(value, str): 
-                options.add_argument(f"--{header}={value}") # add it to the options
-            else:
-                print("Value not string")
-                
-    driver = uc.Chrome(options=options, use_subprocess=True)
-
-    try:
-        driver.get("https://www.safeway.com/")
-        def random_delay(min_sec=0.5, max_sec=5.5):
-            time.sleep(random.uniform(min_sec, max_sec))
-
-        random_delay()
-
-        print("HERE")
-        print(driver.get_cookies())
-        print("BEFORE SCROLL")
-        try:
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight/4);")
-            random_delay()
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
-            random_delay()
-            driver.execute_script("window.scrollTo(0, 0);")
-            random_delay()
-        except:
-             print("Error while initial scrolling")
-
-        try:
-            logo = driver.find_element(By.XPATH, "//a[@aria-label='safeway.com']")
-            search_bar = driver.find_element(By.ID, "search-input-id")
-
-            actions = ActionChains(driver)
-            actions.move_to_element(logo).perform()
-            random_delay(0.2, 0.8)
-            actions.move_to_element(search_bar).perform()
-            random_delay(0.2, 0.8)
-            actions.move_by_offset(random.randint(100, 500), random.randint(100, 300)).perform()
-            random_delay()
-
-        except Exception as e:
-            print("Error trying to find elements to move the mouse to ", e)
-            actions = ActionChains(driver)
-            try:
-                actions.move_by_offset(random.randint(100, 500), random.randint(100, 300)).perform()
-                random_delay()
-            except:
-                print("Moving the mouse failed")
-                pass
-
-        try:
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.ID, "onetrust-accept-btn-handler"))
-            ).click()
-            print("Accepted cookies via banner.")
-        except Exception as e:
-            print(f"Cookie banner interaction failed, or banner didn't appear: {e}")
-
-        random_delay(3, 6)
-        
-        
-        cookies = driver.get_cookies()
-        cookie_dict = {cookie['name']: cookie['value'] for cookie in cookies}
-        return cookie_dict
-
-    except Exception as e:
-        print(f"Error getting cookies with Selenium: {e}")
-        return {}
-    finally:
-        driver.quit()
 
 def fetch_data(start, cookies, query="*"):
     global STOP
@@ -160,7 +86,7 @@ def fetch_data(start, cookies, query="*"):
         "url": "https://www.safeway.com",
         "pageurl": "https://www.safeway.com",
         "pagename": "search",
-        "rows": "100",
+        "rows": "30",
         "start": str(start),
         "search-type": "keyword",
         "storeid": stores["W_SACRAMENTO"],
@@ -175,6 +101,7 @@ def fetch_data(start, cookies, query="*"):
     url = f"{product_search_url}?{urlencode(params)}"
 
     try:
+        print("Fetching data from:", url)
         response = requests.get(url, headers=headers, cookies=cookies, timeout=TIMEOUT)
         response.raise_for_status()
         data = response.json()
@@ -229,9 +156,10 @@ if __name__ == "__main__":
         #     exit()
 
         # print(json.dumps(cookies, indent=4))
-
-        queries = ["oranges", "cookies"]
+        print("Cookies set.")
+        queries = ["*"]
         for query in queries:
+            print("Starting to fetch data...")
             data = fetch_data(0, cookies, query=query)
 
             if data:
