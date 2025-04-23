@@ -1,18 +1,26 @@
 [package]
 name = "octillion"
 version = "0.1.0"
-authors = ["Victoria Worthington"]
-license = "MIT"
+authors = ["Victoria Worthington"] # Adjust if needed
+license = "MIT" # Adjust if needed
 edition = "2021"
 
 [dependencies]
 egui = "0.24"
-eframe = { version = "0.24", features = ["default"] } # NO extra features here
-egui_extras = { version = "0.24", features = ["default", "image"] }
-sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "mysql"] }
-tokio = { version = "1", features = ["full"] }
+eframe = { version = "0.24", features = ["default"] }
+egui_extras = { version = "0.24", features = ["default", "image"] } # Ensure "image" feature is here
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "mysql", "macros"] } # Added macros feature for query_as
+tokio = { version = "1", features = ["full"] } # Use full features for simplicity here
 dotenvy = "0.15"
 futures = "0.3"
 
-[target.'cfg(windows)'.dependencies]  # <--- THIS IS THE KEY PART
-winapi = { version = "0.3", features = ["winuser", "windef"] }
+# Added dependencies for image downloading and processing
+reqwest = { version = "0.11", features = ["rustls-tls", "blocking", "json"] } # Blocking for sync file check, async for download
+image = { version = "0.24", default-features = false, features = ["png", "jpeg"] } # Add image formats you need
+path-clean = "1.0"
+url = "2.5"
+
+# --- ADD THIS SECTION BACK ---
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3.9", features = ["winuser", "windef"] } # Use specific version 0.3.9 if needed, or just 0.3
+# --- END SECTION ---
