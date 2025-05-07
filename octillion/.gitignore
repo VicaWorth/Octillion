@@ -3,4 +3,4 @@ design/
 product_images/
 scraper/jsons
 config.py
-.env
+# .env
