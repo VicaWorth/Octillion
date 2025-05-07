@@ -7,7 +7,7 @@ use egui_extras::{TableBuilder, Column};
 
 use futures::executor::block_on;
 
-use egui::{Align, Layout, TextFormat, TextStyle}; // Import Align and Layout for cell alignment
+use egui::{Align, Layout, TextFormat, TextStyle, Widget, WidgetText}; // Import Align and Layout for cell alignment
 use egui::text::LayoutJob; // For potential
 
 use sqlx::mysql::MySqlPoolOptions;
@@ -60,32 +60,50 @@ struct UIRow {
     quantity: i32,
 }
 
+#[derive(Debug, PartialEq, Clone, Copy)]
+enum SortColumn {
+    Name,
+    Inventory,
+    Price,
+    BasePrice,
+    PricePer,
+    BasePricePer,
+    Unit,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+enum SortDirection {
+    Ascending,
+    Descending,
+}
+
+// Helper function for comparing Option<T> where T: PartialOrd
+// This matches MySQL's NULL sorting (NULLs first in ASC) and Option::cmp for Ord types.
+fn compare_options<T: PartialOrd>(a: &Option<T>, b: &Option<T>, none_is_less: bool) -> std::cmp::Ordering {
+    match (a, b) {
+        (Some(val_a), Some(val_b)) => val_a.partial_cmp(val_b).unwrap_or(std::cmp::Ordering::Equal),
+        (Some(_), None) => if none_is_less { std::cmp::Ordering::Greater } else { std::cmp::Ordering::Less }, // If None is less, Some is Greater
+        (None, Some(_)) => if none_is_less { std::cmp::Ordering::Less } else { std::cmp::Ordering::Greater },    // If None is less, None is Less
+        (None, None) => std::cmp::Ordering::Equal,
+    }
+}
+
 // Enum for Image Status
 // Cannot derive Debug because TextureHandle doesn't implement it.
 #[derive(Clone)]
 enum ImageStatus {
-    Idle,
+    // Idle,
     Downloading,
     Loaded(TextureHandle),
     Error(String),
 }
 
-// Message for communication between download task and UI thread
-// Cannot derive Debug because ColorImage doesn't implement it easily.
 struct ImageMessage {
     url: String,
     result: Result<(PathBuf, ColorImage), String>,
 }
-// Manual Debug impl if needed later:
-// impl std::fmt::Debug for ImageMessage {
-//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-//         f.debug_struct("ImageMessage")
-//          .field("url", &self.url)
-//          .field("result", &self.result.as_ref().map(|_| "Ok(...)").map_err(|e| e)) // Avoid printing image data
-//          .finish()
-//     }
-// }
 
+// In struct MyApp:
 struct MyApp {
     budget_header_text: String,
     rows: Vec<UIRow>,
@@ -98,13 +116,16 @@ struct MyApp {
     image_cache: HashMap<String, ImageStatus>,
     image_tx: mpsc::Sender<ImageMessage>,
     image_rx: mpsc::Receiver<ImageMessage>,
+    // Add these fields for sorting state
+    active_sort_column: Option<SortColumn>,
+    sort_direction: SortDirection,
 }
 
 impl Default for MyApp {
     fn default() -> Self {
         let (image_tx, image_rx) = mpsc::channel(100);
         Self {
-            budget_header_text: "Budget App".to_string(),
+            budget_header_text: "Budget".to_string(),
             rows: vec![],
             product_rows: vec![],
             show_popup: false,
@@ -115,6 +136,9 @@ impl Default for MyApp {
             image_cache: HashMap::new(),
             image_tx,
             image_rx,
+            // Initialize sorting state
+            active_sort_column: None, // No column sorted by default
+            sort_direction: SortDirection::Ascending,
         }
     }
 }
@@ -141,19 +165,20 @@ impl MyApp {
         let row_height = text_height * 1.8;
 
         TableBuilder::new(ui)
-            .striped(true)
-            .resizable(false)
-            .cell_layout(egui::Layout::left_to_right(egui::Align::Center))
-            .column(Column::remainder().at_least(200.0)) // Item
-            .column(Column::exact(100.0).at_most(150.0)) // Price
-            .column(Column::exact(100.0).at_most(150.0)) // Quantity
-            .column(Column::exact(25.0).at_most(50.0))   // Delete
-            .header(text_height * 1.2, |mut header| {
-                header.col(|ui| { ui.strong("Item"); });
-                header.col(|ui| { ui.strong("Price"); });
-                header.col(|ui| { ui.strong("Quantity"); });
-                header.col(|ui| { ui.strong("Delete"); });
-            })
+        .striped(true)
+        .resizable(false) 
+        .cell_layout(egui::Layout::left_to_right(egui::Align::Center))
+        .column(Column::remainder().at_least(150.0)) // Item
+        .column(Column::initial(100.0).at_least(80.0).at_most(200.0)) // Price
+        .column(Column::initial(100.0).at_least(80.0).at_most(150.0))// Quantity:
+        .column(Column::initial(40.0).at_least(30.0).at_most(60.0))// Delete
+        .header(text_height * 1.2, |mut header| {
+            header.col(|ui| { ui.strong("Item"); });
+            header.col(|ui| { ui.strong("Price"); });
+            header.col(|ui| { ui.strong("Quantity"); });
+            // Add padding or adjust alignment if the header text itself feels cramped
+            header.col(|ui| { ui.add_space(5.0); ui.strong("Delete"); }); // Example padding
+        })
             .body(|mut body| {
                 let mut delete_index = None;
                 for (i, row_data) in self.rows.iter_mut().enumerate() {
@@ -179,6 +204,35 @@ impl MyApp {
                      self.rows.remove(index);
                  }
             });
+    }
+
+    fn sort_product_rows(&mut self) {
+        if let Some(sort_column) = self.active_sort_column {
+            let direction = self.sort_direction;
+            // `none_is_less = true` means None values come before Some values in ascending sort.
+            // This is consistent with Option::cmp for types that implement Ord,
+            // and matches typical SQL NULL sorting (NULLs first in ASC).
+            let none_is_less = true;
+
+            self.product_rows.sort_unstable_by(|a, b| {
+                let ordering = match sort_column {
+                    SortColumn::Name => a.name.cmp(&b.name),
+                    SortColumn::Inventory => a.inventory_available.cmp(&b.inventory_available),
+                    SortColumn::Price => compare_options(&a.price, &b.price, none_is_less),
+                    SortColumn::BasePrice => compare_options(&a.base_price, &b.base_price, none_is_less),
+                    SortColumn::PricePer => compare_options(&a.price_per, &b.price_per, none_is_less),
+                    SortColumn::BasePricePer => compare_options(&a.base_price_per, &b.base_price_per, none_is_less),
+                    SortColumn::Unit => a.unit_of_measure.cmp(&b.unit_of_measure),
+                };
+
+                match direction {
+                    SortDirection::Ascending => ordering,
+                    SortDirection::Descending => ordering.reverse(),
+                }
+            });
+            // Important: Clear selection as row indices have changed
+            self.selected_product_index = None;
+        }
     }
 
     fn ui_summary(&self, ui: &mut Ui) {
@@ -299,17 +353,23 @@ impl MyApp {
      }
 
     /// Renders the table displaying the fetched products, now with selection and images.
-    fn ui_product_display_table(&mut self, ui: &mut Ui, _ctx: &egui::Context) {
-        let image_size = egui::vec2(40.0, 40.0);
+    /// Renders the table displaying the fetched products, now with selection, images, and sorting.
+    fn ui_product_display_table(&mut self, ui: &mut Ui, ctx: &egui::Context) { // Changed _ctx to ctx
+        let image_size = egui::vec2(80.0, 80.0);
         let text_height = egui::TextStyle::Body.resolve(ui.style()).size;
         let row_height = image_size.y.max(text_height * 1.5) + ui.style().spacing.item_spacing.y; // Dynamic row height
+
+        // Temporary variables to store interaction results from headers
+        let mut sort_criteria_changed_flag = false;
+        let mut temp_active_sort_col = self.active_sort_column;
+        let mut temp_sort_dir = self.sort_direction;
 
         TableBuilder::new(ui)
             .striped(true)
             .resizable(true)
             .cell_layout(egui::Layout::left_to_right(egui::Align::Center))
             .column(Column::exact(image_size.x + 10.0).at_least(image_size.x)) // Image column + padding
-            .column(Column::remainder().at_least(150.0)) // Item Name (Resizable)
+            .column(Column::remainder().at_least(80.0)) // Item Name (Resizable)
             .column(Column::initial(90.0).at_least(70.0)) // Inventory
             .column(Column::initial(80.0).at_least(60.0)) // Price
             .column(Column::initial(80.0).at_least(60.0)) // Base Price
@@ -318,14 +378,44 @@ impl MyApp {
             .column(Column::initial(60.0).at_least(40.0)) // Unit
             .min_scrolled_height(200.0) // Ensure table area has min height
             .header(20.0, |mut header| {
-                header.col(|ui| { ui.strong("Image"); });
-                header.col(|ui| { ui.strong("Item"); });
-                header.col(|ui| { ui.strong("Inventory"); });
-                header.col(|ui| { ui.strong("Price"); });
-                header.col(|ui| { ui.strong("Base Price"); });
-                header.col(|ui| { ui.strong("Price / Unit"); });
-                header.col(|ui| { ui.strong("Base / Unit"); });
-                header.col(|ui| { ui.strong("Unit"); });
+                // Helper closure to create sortable header cells
+                // This closure captures temp_active_sort_col, temp_sort_dir, and sort_criteria_changed_flag mutably.
+                let mut sort_header_button =
+                    |ui: &mut egui::Ui, label: &str, column_type: SortColumn| {
+                    let mut button_text = label.to_string();
+                    if temp_active_sort_col == Some(column_type) {
+                        // Corrected part: use push_str for string slices
+                        let suffix = match temp_sort_dir {
+                            SortDirection::Ascending => " ^", // Now a string slice
+                            SortDirection::Descending => " v", // Now a string slice
+                        };
+                        button_text.push_str(suffix); // Use push_str
+                    }
+                    // Use a button for the header. Styling could make it look more like a typical table header.
+                    if ui.button(button_text).clicked() {
+                        if temp_active_sort_col == Some(column_type) {
+                            // Clicked on the same column, toggle direction
+                            temp_sort_dir = match temp_sort_dir {
+                                SortDirection::Ascending => SortDirection::Descending,
+                                SortDirection::Descending => SortDirection::Ascending,
+                            };
+                        } else {
+                            // Clicked on a new column, sort ascending by default
+                            temp_active_sort_col = Some(column_type);
+                            temp_sort_dir = SortDirection::Ascending;
+                        }
+                        sort_criteria_changed_flag = true; // Signal that sort criteria have changed
+                    }
+                };
+
+                header.col(|ui| { ui.strong("Image"); }); // Image column not sortable
+                header.col(|ui| sort_header_button(ui, "Item", SortColumn::Name));
+                header.col(|ui| sort_header_button(ui, "Inventory", SortColumn::Inventory));
+                header.col(|ui| sort_header_button(ui, "Price", SortColumn::Price));
+                header.col(|ui| sort_header_button(ui, "Base Price", SortColumn::BasePrice));
+                header.col(|ui| sort_header_button(ui, "Price / Unit", SortColumn::PricePer));
+                header.col(|ui| sort_header_button(ui, "Base / Unit", SortColumn::BasePricePer));
+                header.col(|ui| sort_header_button(ui, "Unit", SortColumn::Unit));
             })
             .body(|mut body| {
                 // Handle empty state display within the table body
@@ -347,11 +437,12 @@ impl MyApp {
                     }
                     // If error_message is set, it's handled above the table
                 } else {
-                    // Clone data needed inside the loop to avoid borrow issues
-                    let products_clone = self.product_rows.clone();
-                    let image_cache_clone = self.image_cache.clone(); // Clone for read-only access in row closures
+                    // Clone data needed inside the loop to avoid borrow issues if not sorting live
+                    // Since sorting happens before this, direct iteration is fine.
+                    let products_view = &self.product_rows; // Iterate over the (potentially sorted) rows
+                    let image_cache_clone = self.image_cache.clone();
 
-                    for (index, product) in products_clone.iter().enumerate() {
+                    for (index, product) in products_view.iter().enumerate() {
                         body.row(row_height, |mut row| {
                             row.col(|ui| { // Image Column
                                 if let Some(url) = &product.image_url {
@@ -381,14 +472,42 @@ impl MyApp {
                                 }
                             });
 
-                            row.col(|ui| { // Item Name Column (Selectable)
-                                let item_label = product.name.as_deref().unwrap_or("N/A");
-                                // selectable_value handles state update and display
-                                let response = ui.selectable_value(&mut self.selected_product_index, Some(index), item_label);
-                                // Add tooltip for long names
-                                if response.hovered() {
-                                     egui::containers::popup::show_tooltip_text(ui.ctx(), egui::Id::new("product_tooltip").with(index), item_label);
+                            // --- Item Name Column (Selectable + Truncate) ---
+                            row.col(|ui| {
+                                let item_label_str = product.name.as_deref().unwrap_or("N/A");
+                                let is_selected = self.selected_product_index == Some(index);
+
+                                let (rect, response) = ui.allocate_at_least(
+                                    ui.available_size_before_wrap(),
+                                    egui::Sense::click()
+                                );
+
+                                if response.clicked() {
+                                    // Toggle selection on click
+                                    if self.selected_product_index == Some(index) {
+                                        // self.selected_product_index = None; // Optional: deselect on click
+                                    } else {
+                                        self.selected_product_index = Some(index);
+                                    }
+                                    // No need to request repaint here for selection, as sort might do it.
+                                    // ui.ctx().request_repaint(); // If only selection changes
                                 }
+
+                                if is_selected {
+                                    ui.painter().rect_filled(
+                                        rect,
+                                        egui::Rounding::none(),
+                                        ui.visuals().selection.bg_fill,
+                                    );
+                                }
+                                let mut cell_ui = ui.child_ui(rect, *ui.layout());
+                                let label_response = cell_ui.add(
+                                    egui::Label::new(item_label_str)
+                                        .truncate(true) // Enable truncation "..."
+                                );
+
+                                // Add hover text to show the full name if truncated.
+                                label_response.on_hover_text(item_label_str);
                             });
 
                             // Other Columns
@@ -409,8 +528,15 @@ impl MyApp {
                     } // End loop
                 } // End else (product_rows not empty)
             }); // End body
-    }
 
+        // After the table is built, if sort criteria changed, update self and re-sort.
+        if sort_criteria_changed_flag {
+            self.active_sort_column = temp_active_sort_col;
+            self.sort_direction = temp_sort_dir;
+            self.sort_product_rows(); // This will also clear selected_product_index
+            ctx.request_repaint(); // Request repaint as data order has changed
+        }
+    }
 
     /// Fetches product metadata synchronously, then spawns async tasks for image downloads.
     fn fetch_products(&mut self) {
@@ -421,7 +547,7 @@ impl MyApp {
 
         // HACK: Create temporary context to request repaint during potentially long fetch.
         // Ideally, context would be passed or accessed more directly if needed mid-operation.
-        let ctx = egui::Context::default();
+        let ctx = egui::Context::default(); // Keep this for repaint requests if needed
         ctx.request_repaint(); // Request redraw to show loading state
 
         // Block on DB operations (simplifies state management compared to fully async fetch)
@@ -468,10 +594,16 @@ impl MyApp {
              }
              Err(e) => { self.error_message = format!("Database connection error: {}", e); }
          }
-         self.loading_products = false; // Indicate loading finished
-         ctx.request_repaint(); // Request redraw to show results/error
-    }
 
+        // Re-apply current sort if one is active
+        if self.active_sort_column.is_some() {
+            self.sort_product_rows();
+        }
+
+        self.loading_products = false; // Indicate loading finished
+        ctx.request_repaint(); // Request redraw to show results/error
+    }
+    
     fn apply_styling(&self, ctx: &egui::Context) {
          ctx.style_mut(|style| {
             style.spacing.item_spacing = egui::vec2(8.0, 4.0);
@@ -545,17 +677,12 @@ impl eframe::App for MyApp {
                         .inner_margin(egui::Margin::symmetric(20.0, 15.0))
                         .show(ui, |ui| {
                             ui.set_width(content_width); // Constrain width
-                            ui.style_mut().spacing.item_spacing = vec2(10.0, 10.0); // Adjust spacing within frame
                             ui.heading(&self.budget_header_text);
-                            ui.add_space(15.0);
                             self.ui_budget_table(ui); // Display the budget items table
-                            ui.add_space(10.0);
                             ui.separator();
-                            ui.add_space(10.0);
                             self.ui_summary(ui); // Display the total summary
-                            ui.add_space(10.0);
                             ui.separator();
-                            ui.add_space(15.0);
+
                             // Button to open the product search popup
                             if ui.button("Add Product from DB").clicked() {
                                 self.show_popup = true;
